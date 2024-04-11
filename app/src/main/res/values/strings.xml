@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">ea-gui</string>
+    <string name="grades_title">Grades</string>
+    <string name="exemptions_title">Exemptions</string>
+    <string name="exams_title">Exams</string>
+    <string name="profile_title">Profile</string>
 </resources>
+
