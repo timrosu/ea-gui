@@ -2,4 +2,5 @@
 <resources>
     <color name="black">#000000FF</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="ea_violet">#1E1E2E</color>
 </resources>

@@ -1,7 +1,9 @@
 package com.timrosu.ea_gui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     ExemptionsFragment exemptionsFragment = new ExemptionsFragment();
     ProfileFragment profileFragment = new ProfileFragment();
 
+    // glede na izbran gumb da pravi fragment v ospredje
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         int menuItemId = menuItem.getItemId();
@@ -66,5 +69,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             return true;
         }
         return false;
+    }
+
+    public void launchLoginScreen(View v) {
+        Intent i = new Intent(this,LoginActivity.class);
+        startActivity(i);
     }
 }
