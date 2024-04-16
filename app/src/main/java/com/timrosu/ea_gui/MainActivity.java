@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
     GradesFragment gradesFragment = new GradesFragment();
     ExamsFragment examsFragment = new ExamsFragment();
-    ExemptionsFragment exemptionsFragment = new ExemptionsFragment();
+    AbsencesFragment absencesFragment = new AbsencesFragment();
     ProfileFragment profileFragment = new ProfileFragment();
 
     // glede na izbran gumb da pravi fragment v ospredje
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         } else if (menuItemId==R.id.exemptions) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.flFragment, exemptionsFragment)
+                    .replace(R.id.flFragment, absencesFragment)
                     .commit();
             return true;
         } else if (menuItemId==R.id.profile) {

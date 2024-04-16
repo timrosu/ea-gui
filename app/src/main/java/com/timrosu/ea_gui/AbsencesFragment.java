@@ -8,12 +8,12 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-public class ExemptionsFragment extends Fragment {
-    public ExemptionsFragment() {
+public class AbsencesFragment extends Fragment {
+    public AbsencesFragment() {
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        return inflater.inflate(R.layout.exemptions_fragment,container,false);
+        return inflater.inflate(R.layout.absences_fragment,container,false);
     }
 }
