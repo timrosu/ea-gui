@@ -11,6 +11,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.timrosu.ea_gui.api.keystore.CryptoManager;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
 public class LoginActivity extends AppCompatActivity {
 
     @Override
@@ -24,24 +29,21 @@ public class LoginActivity extends AppCompatActivity {
             return insets;
         });
     }
-    public void savePassword(View v){
+    public void savePassword(View v) throws GeneralSecurityException, IOException {
         TextView usernameTV = findViewById(R.id.username_input);
         String username = usernameTV.getText().toString();
         TextView passwordTV = findViewById(R.id.password_input);
         String password = passwordTV.getText().toString();
 
-        Toast.makeText(this,"credentials saved",Toast.LENGTH_SHORT).show();
+        // cryptomanager test:
+        CryptoManager.saveCredentials(this,username,password);
+
+        Toast.makeText(this,"username: "+CryptoManager.getUsername(this),Toast.LENGTH_SHORT).show();
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        Toast.makeText(this,"username: "+username,Toast.LENGTH_SHORT).show();
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        Toast.makeText(this,"password: "+password,Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,"username: "+CryptoManager.getPassword(this),Toast.LENGTH_SHORT).show();
     }
 }
