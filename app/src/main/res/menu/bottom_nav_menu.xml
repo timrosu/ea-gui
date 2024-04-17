@@ -10,7 +10,7 @@
         android:icon="@drawable/ic_exams"/>
     <item
         android:id="@+id/exemptions"
-        android:title="@string/exemptions_title"
+        android:title="@string/absences_title"
         android:icon="@drawable/ic_absences"/>
     <item
         android:id="@+id/profile"

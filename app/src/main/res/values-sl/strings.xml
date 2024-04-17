@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="exams_title">Ocenjevanja</string>
+    <string name="absences_title">Izostanki</string>
+    <string name="profile_title">Profil</string>
+    <string name="login_button_label">prijava</string>
+    <string name="username_hint">e-pošta</string>
+    <string name="password_hint">geslo</string>
+</resources>

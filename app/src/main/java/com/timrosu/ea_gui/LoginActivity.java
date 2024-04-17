@@ -10,13 +10,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
-import com.timrosu.ea_gui.api.keystore.CryptoManager;
+import com.timrosu.ea_gui.api.Api;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 public class LoginActivity extends AppCompatActivity {
+    Api api;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,22 +28,22 @@ public class LoginActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        api = Api.getInstance(this);
     }
+    //TODO: popravi to
     public void savePassword(View v) throws GeneralSecurityException, IOException {
         TextView usernameTV = findViewById(R.id.username_input);
         String username = usernameTV.getText().toString();
         TextView passwordTV = findViewById(R.id.password_input);
         String password = passwordTV.getText().toString();
 
-        // cryptomanager test:
-        CryptoManager.saveCredentials(this,username,password);
+        String message = api.login(username,password);
 
-        Toast.makeText(this,"username: "+CryptoManager.getUsername(this),Toast.LENGTH_SHORT).show();
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        if (message.equals("success")){
+            Toast.makeText(this, R.string.login_successful_toast,Toast.LENGTH_SHORT).show();
+            finish();
+        } else {
+            Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
         }
-        Toast.makeText(this,"username: "+CryptoManager.getPassword(this),Toast.LENGTH_SHORT).show();
     }
 }

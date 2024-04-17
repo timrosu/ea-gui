@@ -1,45 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:gravity="center"
-    android:orientation="vertical"
-    tools:context=".LoginActivity">
+    tools:context=".LoginActivity"
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="57dp">
+
 
     <TextView
         android:id="@+id/login_title"
-        android:layout_width="match_parent"
-        android:layout_height="100sp"
-        android:layout_gravity="center|top"
-        android:text="Login"
-        android:textSize="30sp" />
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="252dp"
+        android:gravity="center"
+        android:text="@string/loginActivity_title"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        android:id="@+id/credentials_input_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/button2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/login_title"
+        app:layout_constraintVertical_bias="0.79">
 
         <EditText
             android:id="@+id/username_input"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:autofillHints="emailAddress"
             android:ems="10"
-            android:hint="username"
+            android:hint="@string/username_hint"
             android:inputType="text"
             android:textAlignment="center" />
 
         <EditText
             android:id="@+id/password_input"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:autofillHints="password"
             android:ems="10"
-            android:hint="password"
+            android:hint="@string/password_hint"
             android:inputType="textPassword"
             android:textAlignment="center" />
     </LinearLayout>
@@ -48,7 +63,13 @@
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
         android:onClick="savePassword"
-        android:text="enter" />
+        android:text="@string/login_button_label"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/password_input"
+        app:layout_constraintVertical_bias="0.73" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

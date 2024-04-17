@@ -19,7 +19,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Api {
-    Context context;
     private String cookie;
     private String bearer;
     private final Map<Integer, GradeItem> gradeMap = new HashMap<>();
@@ -27,11 +26,25 @@ public class Api {
     private final Map<Integer, AbsenceItem> absenceMap = new HashMap<>();
     private final Map<String, String> childMap = new HashMap<>();
 
-    private final ApiInterface apiInterface;
-
-    public Api(Context context) {
-        apiInterface = RetrofitClientInstance.getRetrofitInstance().create(ApiInterface.class);
+//    private final ApiInterface apiInterface;
+//
+//    public Api(Context context) {
+//        apiInterface = RetrofitClientInstance.getRetrofitInstance().create(ApiInterface.class);
+//        this.context = context;
+//    }
+    // omogoca kreacijo le ene instance Api razreda (za predpomnenje avtentikacijskega kljuca)
+    private static Api apiInstance;
+    private Context context;
+    private ApiInterface apiInterface;
+    private Api(Context context) {
         this.context = context;
+        apiInterface = RetrofitClientInstance.getRetrofitInstance().create(ApiInterface.class);
+    }
+    public static synchronized Api getInstance(Context context) {
+        if (apiInstance == null) {
+            apiInstance = new Api(context);
+        }
+        return apiInstance;
     }
 
     // sprejme uporabnisko ime in geslo in ga shrani
@@ -47,6 +60,7 @@ public class Api {
                     if (Objects.requireNonNull(loginResponse).getStatus().equals("ok")) {
                         cookie = response.headers().get("set-cookie");
                         CryptoManager.saveCredentials(context, username, password); // shrani prijavne podatke na varno mesto
+                        message[0]="success";
                     } else {
                         String loginResponseString = loginResponse.toString();
                         message[0] = loginResponseString.split("\\. ", -1)[0];
