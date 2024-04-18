@@ -5,11 +5,16 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.timrosu.ea_gui.api.cache.Credentials;
+import com.timrosu.ea_gui.api.callback.LoginCallback;
 import com.timrosu.ea_gui.client.ApiClient;
 import com.timrosu.ea_gui.keystore.CryptoManager;
-import com.timrosu.ea_gui.model.response.*;
+import com.timrosu.ea_gui.model.response.AbsenceResponse;
+import com.timrosu.ea_gui.model.response.ChildResponse;
+import com.timrosu.ea_gui.model.response.ExamResponse;
+import com.timrosu.ea_gui.model.response.GradeResponse;
+import com.timrosu.ea_gui.model.response.LoginResponse;
 import com.timrosu.ea_gui.service.ApiService;
-import com.timrosu.ea_gui.api.cache.Credentials;
 
 import java.util.HashMap;
 import java.util.List;
@@ -38,46 +43,52 @@ public class Api {
     }
 
     // sprejme uporabnisko ime in geslo in ga shrani
-    public int setLogin(String username, String password) {
-        final int[] code = new int[1];
-
+    public void setLogin(String username, String password, LoginCallback callback) {
         Call<LoginResponse> call = client.getApiService().login(username, password);
         call.enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
                 if (response.isSuccessful()) {
                     LoginResponse loginResponse = response.body();
-                    code[0] = response.code();
-
-                    // preverjanje pravilnosti prijavnih podatkov
+                    int code = response.code();
                     if (Objects.requireNonNull(loginResponse).getStatus().equals("ok")) {
+                        CryptoManager.saveCredentials(context,username,password);
                         cookie = response.headers().get("set-cookie"); //predpomnenje piskotka
                         assert cookie != null;
-                        Log.i("Cookie",cookie);
-                        Log.i("status",loginResponse.getStatus());
+                        Log.i("Cookie", cookie);
+                        Log.i("status", loginResponse.getStatus());
+                        callback.onLoginSuccess(code);
                     }
                 }
             }
-
             @Override
             public void onFailure(@NonNull Call<LoginResponse> call, @NonNull Throwable throwable) {
-                Log.d("LoginError", Objects.requireNonNull(throwable.getLocalizedMessage()));
+                callback.onLoginFailure(throwable);
             }
         });
-        return code[0];
     }
-
     public void logout() { //odjava
         CryptoManager.deleteCredentials(context);
     }
 
-    public void credentialCheck() { //povezava z razredom CryptoManager za preverjanje prisotnosti prijavnih podatkov
-        CryptoManager.checkCredentials(context);
+    public boolean credentialCheck() { //povezava z razredom CryptoManager za preverjanje prisotnosti prijavnih podatkov
+        return CryptoManager.checkCredentials(context);
     }
 
     private String getCookie() { //metoda za pridobitev piskotka
         if (cookie == null) {
-            setLogin(CryptoManager.getUsername(context), CryptoManager.getPassword(context));
+            setLogin(CryptoManager.getUsername(context), CryptoManager.getPassword(context), new LoginCallback() {
+                @Override
+                public void onLoginSuccess(int code) {
+                    // Handle successful login
+                    Log.i("LoginSuccess", "Login successful with code: " + code);
+                }
+                @Override
+                public void onLoginFailure(Throwable throwable) {
+                    // Handle login failure
+                    Log.e("LoginError", "Login failed", throwable);
+                }
+            });
         }
         return cookie;
     }
@@ -232,4 +243,5 @@ public class Api {
         });
         return childMap;
     }
+
 }

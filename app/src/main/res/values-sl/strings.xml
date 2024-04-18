@@ -11,4 +11,5 @@
     <string name="password_hint">geslo</string>
     <string name="login_successful_toast">Prijava uspešna</string>
     <string name="no_credentials_warning">Vnesi uporabniško ime in geslo</string>
+    <string name="login_failed">Prijava neuspešna</string>
 </resources>

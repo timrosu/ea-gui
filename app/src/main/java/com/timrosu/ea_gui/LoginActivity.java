@@ -1,6 +1,7 @@
 package com.timrosu.ea_gui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -12,6 +13,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.timrosu.ea_gui.api.Api;
+import com.timrosu.ea_gui.api.callback.LoginCallback;
 
 public class LoginActivity extends AppCompatActivity {
     Api api;
@@ -42,9 +44,25 @@ public class LoginActivity extends AppCompatActivity {
         if (username.isEmpty() && password.isEmpty()) {
             errorTV.setText(getString(R.string.no_credentials_warning));
         } else {
-            sendToast(String.valueOf(api.setLogin(username, password)));
-//            Log.i("grades", api.getChild().toString());
-            finish();
+
+            api.setLogin(username, password, new LoginCallback() {
+                @Override
+                public void onLoginSuccess(int code) {
+                    // Handle successful login
+                    Log.i("LoginSuccess", "Login successful with code: " + code);
+                    sendToast(getString(R.string.login_successful_toast));
+                    finish();
+                }
+
+                @Override
+                public void onLoginFailure(Throwable throwable) {
+                    // Handle login failure
+                    Log.e("LoginError", "Login failed", throwable);
+                    errorTV.setText(R.string.login_failed);
+                }
+            });
+
+
         }
 
     }
