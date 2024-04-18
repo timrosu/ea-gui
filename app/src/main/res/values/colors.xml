@@ -3,4 +3,6 @@
     <color name="black">#000000FF</color>
     <color name="white">#FFFFFFFF</color>
     <color name="ea_violet">#1E1E2E</color>
+    <color name="heading">@color/material_dynamic_primary80</color>
+    <color name="heading2">@color/material_dynamic_primary90</color>
 </resources>

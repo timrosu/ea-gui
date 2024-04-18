@@ -10,10 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import com.timrosu.ea_gui.api.Api;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
+import com.timrosu.ea_gui.api.Api;
 
 public class LoginActivity extends AppCompatActivity {
     Api api;
@@ -28,22 +26,30 @@ public class LoginActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        api = Api.getInstance(this);
+        api = new Api(this);
     }
-    //TODO: popravi to
-    public void savePassword(View v) throws GeneralSecurityException, IOException {
-        TextView usernameTV = findViewById(R.id.username_input);
-        String username = usernameTV.getText().toString();
-        TextView passwordTV = findViewById(R.id.password_input);
-        String password = passwordTV.getText().toString();
 
-        String message = api.login(username,password);
+    public void getInputs(View v) {
+//        LoginResponse loginResponse = new LoginResponse();
 
-        if (message.equals("success")){
-            Toast.makeText(this, R.string.login_successful_toast,Toast.LENGTH_SHORT).show();
-            finish();
+        TextView etUsername = findViewById(R.id.etUsername);
+        String username = etUsername.getText().toString();
+        TextView etPassword = findViewById(R.id.etPassword);
+        String password = etPassword.getText().toString();
+
+        TextView errorTV = findViewById(R.id.errorTV);
+
+        if (username.isEmpty() && password.isEmpty()) {
+            errorTV.setText(getString(R.string.no_credentials_warning));
         } else {
-            Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
+            sendToast(String.valueOf(api.setLogin(username, password)));
+//            Log.i("grades", api.getChild().toString());
+            finish();
         }
+
+    }
+
+    private void sendToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

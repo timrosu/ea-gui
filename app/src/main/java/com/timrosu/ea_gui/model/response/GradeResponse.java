@@ -1,16 +1,16 @@
-package com.timrosu.ea_gui.api.responses;
+package com.timrosu.ea_gui.model.response;
 
 import com.google.gson.annotations.SerializedName;
 
-public class ExamItem {
+public class GradeResponse {
     @SerializedName("course")
     private String course;
     @SerializedName("type_name")
-    private String typeName;
+    private String type_name;
     @SerializedName("date")
     private String date;
-    @SerializedName("period")
-    private String period;
+    @SerializedName("grade")
+    private String grade;
     @SerializedName("subject")
     private String subject;
 }

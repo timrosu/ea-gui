@@ -15,5 +15,10 @@
     <string name="username_hint">e-mail</string>
     <string name="password_hint">password</string>
     <string name="login_successful_toast">Login successful!</string>
+    <string name="welcome_text">Welcome to ea-gui!</string>
+    <string name="user_login">User login</string>
+    <string name="no_credentials_warning">Enter username and password!</string>
+    <string name="logout_button">logout</string>
+    <string name="error_wrong_credentials">ERROR: Wrong credentials</string>
 </resources>
 

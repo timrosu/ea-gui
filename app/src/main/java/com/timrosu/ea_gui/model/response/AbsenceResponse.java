@@ -1,8 +1,8 @@
-package com.timrosu.ea_gui.api.responses;
+package com.timrosu.ea_gui.model.response;
 
 import com.google.gson.annotations.SerializedName;
 
-public class AbsenceItem {
+public class AbsenceResponse {
     @SerializedName("date")
     private String date;
     @SerializedName("excused_count")

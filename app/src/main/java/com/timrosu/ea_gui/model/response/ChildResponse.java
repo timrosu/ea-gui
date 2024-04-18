@@ -1,4 +1,4 @@
-package com.timrosu.ea_gui.api.responses;
+package com.timrosu.ea_gui.model.response;
 
 import com.google.gson.annotations.SerializedName;
 

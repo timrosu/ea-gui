@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="exams_title">Ocenjevanja</string>
+    <string name="grades_title">Ocene</string>
     <string name="absences_title">Izostanki</string>
     <string name="profile_title">Profil</string>
+    <string name="next">Naprej</string>
+    <string name="previous">N</string>
     <string name="login_button_label">prijava</string>
     <string name="username_hint">e-pošta</string>
     <string name="password_hint">geslo</string>
+    <string name="login_successful_toast">Prijava uspešna</string>
+    <string name="no_credentials_warning">Vnesi uporabniško ime in geslo</string>
 </resources>

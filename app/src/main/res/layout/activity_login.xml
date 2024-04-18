@@ -11,65 +11,84 @@
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="57dp">
 
-
-    <TextView
-        android:id="@+id/login_title"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginTop="252dp"
-        android:gravity="center"
-        android:text="@string/loginActivity_title"
-        android:textSize="30sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/button2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_title"
-        app:layout_constraintVertical_bias="0.79">
-
-        <EditText
-            android:id="@+id/username_input"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:autofillHints="emailAddress"
-            android:ems="10"
-            android:hint="@string/username_hint"
-            android:inputType="text"
-            android:textAlignment="center" />
-
-        <EditText
-            android:id="@+id/password_input"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:autofillHints="password"
-            android:ems="10"
-            android:hint="@string/password_hint"
-            android:inputType="textPassword"
-            android:textAlignment="center" />
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:onClick="savePassword"
-        android:text="@string/login_button_label"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password_input"
-        app:layout_constraintVertical_bias="0.73" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/user_login"
+            android:textColor="@color/heading"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tlUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30sp"
+            android:layout_marginEnd="30sp"
+            android:layout_marginTop="50sp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etUsername"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/username_hint"
+                android:padding="16sp"
+                android:inputType="text"
+                android:drawableStart="@drawable/username_icon"
+                android:drawableTintMode="add"
+                android:drawablePadding="16sp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tlPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30sp"
+                app:passwordToggleEnabled="true"
+                app:passwordToggleContentDescription="password"
+                app:passwordToggleTint="@color/heading2"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/password_hint"
+                    android:padding="16sp"
+                    android:inputType="text"
+                    android:drawableStart="@drawable/password_icon"
+                    android:drawableTintMode="screen"
+                    android:drawablePadding="16dp"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/errorTV"
+                android:layout_marginTop="25sp"
+                android:textAlignment="center"
+                android:textSize="17sp"
+                android:textColor="?android:attr/colorError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/login_button_label"
+                android:textAllCaps="true"
+                android:onClick="getInputs"
+                android:layout_marginTop="25sp"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
