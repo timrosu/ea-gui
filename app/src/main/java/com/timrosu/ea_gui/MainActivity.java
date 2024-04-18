@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     AbsencesFragment absencesFragment = new AbsencesFragment();
     ProfileFragment profileFragment = new ProfileFragment();
 
-    //ProfileFragment:
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

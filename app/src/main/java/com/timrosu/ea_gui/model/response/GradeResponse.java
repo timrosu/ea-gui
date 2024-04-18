@@ -13,4 +13,24 @@ public class GradeResponse {
     private String grade;
     @SerializedName("subject")
     private String subject;
+
+    public String getCourse() {
+        return course;
+    }
+
+    public String getType_name() {
+        return type_name;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getGrade() {
+        return grade;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
 }

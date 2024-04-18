@@ -16,6 +16,8 @@ okhttp = "5.0.0-alpha.12"
 gson = "2.10.1"
 securityCrypto = "1.1.0-alpha06"
 loggingInterceptorVersion = "5.0.0-alpha.12"
+converterScalars = "2.11.0"
+jsoup = "1.17.2"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -34,6 +36,8 @@ okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhtt
 logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingInterceptorVersion" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
+converter-scalars = { group = "com.squareup.retrofit2", name = "converter-scalars", version.ref = "converterScalars" }
+jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

@@ -6,6 +6,10 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.timrosu.ea_gui.api.cache.Credentials;
+import com.timrosu.ea_gui.api.callback.AbsenceCallback;
+import com.timrosu.ea_gui.api.callback.ChildCallback;
+import com.timrosu.ea_gui.api.callback.ExamCallback;
+import com.timrosu.ea_gui.api.callback.GradeCallback;
 import com.timrosu.ea_gui.api.callback.LoginCallback;
 import com.timrosu.ea_gui.client.ApiClient;
 import com.timrosu.ea_gui.keystore.CryptoManager;
@@ -52,7 +56,7 @@ public class Api {
                     LoginResponse loginResponse = response.body();
                     int code = response.code();
                     if (Objects.requireNonNull(loginResponse).getStatus().equals("ok")) {
-                        CryptoManager.saveCredentials(context,username,password);
+                        CryptoManager.saveCredentials(context, username, password);
                         cookie = response.headers().get("set-cookie"); //predpomnenje piskotka
                         assert cookie != null;
                         Log.i("Cookie", cookie);
@@ -61,12 +65,14 @@ public class Api {
                     }
                 }
             }
+
             @Override
             public void onFailure(@NonNull Call<LoginResponse> call, @NonNull Throwable throwable) {
                 callback.onLoginFailure(throwable);
             }
         });
     }
+
     public void logout() { //odjava
         CryptoManager.deleteCredentials(context);
     }
@@ -81,45 +87,73 @@ public class Api {
                 @Override
                 public void onLoginSuccess(int code) {
                     // Handle successful login
-                    Log.i("LoginSuccess", "Login successful with code: " + code);
+                    Log.i("getCookieSuccess", "getCookie successful with code: " + code);
                 }
+
                 @Override
                 public void onLoginFailure(Throwable throwable) {
                     // Handle login failure
-                    Log.e("LoginError", "Login failed", throwable);
+                    Log.e("getCookieError", "Login failed", throwable);
                 }
             });
         }
         return cookie;
     }
 
-    private String getBearer() { //pridobi avtentikacijsko kodo
+    private String getBearer() {
+        class BearerCallback {
+            void onBearerReceived(String bearer) {
+                // Handle the received bearer token
+                Log.i("BearerToken", "Received bearer token: " + bearer);
+            }
+
+            void onBearerError(Throwable throwable) {
+                // Handle the error
+                Log.e("BearerError", "Error getting bearer token", throwable);
+            }
+        }
+        // Instantiate the callback
+        BearerCallback callback = new BearerCallback();
         if (Credentials.getBearer() == null) {
             Call<String> call = client.getApiService().getBearer(getCookie());
             call.enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
                     if (response.isSuccessful()) {
-                        String regex = "<meta name=\"access-token\" content=\"(.*?)\">"; //regex niz za izluscitev iz html dokumenta
+                        String html = response.body();
+                        assert html != null;
+                        Log.i("BearerTokenBody", html);
+
+                        String regex = "<meta name=\"access-token\" content=\"(.*?)\">"; //regex to extract from html document
                         Pattern pattern = Pattern.compile(regex);
-                        Matcher matcher = pattern.matcher(Objects.requireNonNull(response.body()));
+                        Matcher matcher = pattern.matcher(html);
 
                         if (matcher.find()) {
                             Credentials.setBearer(matcher.group(1));
+                            callback.onBearerReceived(Credentials.getBearer());
+                        } else {
+                            callback.onBearerError(new Exception("Access token not found in HTML"));
                         }
+                    } else {
+                        callback.onBearerError(new Exception("HTTP Error: " + response.code()));
                     }
                 }
 
+
                 @Override
                 public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
+                    Log.e("BearerError", "Error getting bearer token", t);
+                    callback.onBearerError(new Exception("Error getting bearer token", t));
                 }
-            });
 
+            });
+        } else {
+            callback.onBearerReceived(Credentials.getBearer());
         }
         return Credentials.getBearer();
     }
 
-    public Map<String, String> getChild() {
+    public Map<String, String> getChild(ChildCallback callback) {
         if (childMap.isEmpty()) {
 
             Call<ChildResponse> call = client.getApiService().getChild(getBearer());
@@ -135,13 +169,15 @@ public class Api {
                         childMap.put("type", ChildResponse.getType());
                         childMap.put("plus", ChildResponse.getPlus_enabled());
                         childMap.put("date", ChildResponse.getDate());
+
+                        callback.onFetchSuccess(childMap);
                     }
 
                 }
 
                 @Override
-                public void onFailure(Call<ChildResponse> call, Throwable throwable) {
-
+                public void onFailure(@NonNull Call<ChildResponse> call, @NonNull Throwable throwable) {
+                    callback.onFetchError(throwable);
                 }
 
             });
@@ -151,97 +187,73 @@ public class Api {
     }
 
     //TODO: error handling
-    public List<ExamResponse> getExams() {
-        if (examResponseList.isEmpty()) {
+    public List<ExamResponse> getExams(ExamCallback callback) {
+//        if (examResponseList.isEmpty()) {
 
-            Call<List<ExamResponse>> call = client.getApiService().getExams(getBearer());
-            call.enqueue(new Callback<List<ExamResponse>>() {
-                @Override
-                public void onResponse(@NonNull Call<List<ExamResponse>> call, @NonNull Response<List<ExamResponse>> response) {
-                    if (response.isSuccessful()) {
-                        examResponseList = response.body();
-                    }
+        Call<List<ExamResponse>> call = client.getApiService().getExams(getBearer());
+        call.enqueue(new Callback<List<ExamResponse>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<ExamResponse>> call, @NonNull Response<List<ExamResponse>> response) {
+                if (response.isSuccessful()) {
+                    examResponseList = response.body();
+                    callback.onFetchSuccess(examResponseList);
                 }
+            }
 
-                @Override
-                public void onFailure(@NonNull Call<List<ExamResponse>> call, @NonNull Throwable t) {
-                    // Handle the failure
-                }
-            });
-        }
+            @Override
+            public void onFailure(@NonNull Call<List<ExamResponse>> call, @NonNull Throwable throwable) {
+                callback.onFetchError(throwable);
+            }
+        });
+//        }
         return examResponseList;
     }
 
     //TODO: error handling
-    public List<GradeResponse> getGrades() {
+    public List<GradeResponse> getGrades(GradeCallback callback) {
 //        if (gradeResponseList.isEmpty()) {
 
-            Call<List<GradeResponse>> call = client.getApiService().getGrades(getBearer());
-            call.enqueue(new Callback<List<GradeResponse>>() {
-                @Override
-                public void onResponse(@NonNull Call<List<GradeResponse>> call, @NonNull Response<List<GradeResponse>> response) {
-                    if (response.isSuccessful()) {
-                        gradeResponseList = response.body();
-                    }
+        Call<List<GradeResponse>> call = client.getApiService().getGrades(getBearer());
+        call.enqueue(new Callback<List<GradeResponse>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<GradeResponse>> call, @NonNull Response<List<GradeResponse>> response) {
+                if (response.isSuccessful()) {
+                    gradeResponseList = response.body();
+                    callback.onFetchSuccess(gradeResponseList);
                 }
+            }
 
-                @Override
-                public void onFailure(@NonNull Call<List<GradeResponse>> call, @NonNull Throwable t) {
-                    Log.d("GradeError", Objects.requireNonNull(t.getLocalizedMessage()));
-                }
-            });
+            @Override
+            public void onFailure(@NonNull Call<List<GradeResponse>> call, @NonNull Throwable t) {
+                Log.d("GradeError", Objects.requireNonNull(t.getLocalizedMessage()));
+                callback.onFetchError(t);
+            }
+        });
 //        }
         return gradeResponseList;
     }
 
     //TODO: error handling
-    public List<AbsenceResponse> getAbsences() {
-        if (absenceResponseList.isEmpty()) {
+    public List<AbsenceResponse> getAbsences(AbsenceCallback callback) {
+//        if (absenceResponseList.isEmpty()) {
 
-            Call<List<AbsenceResponse>> call = client.getApiService().getAbsences(getBearer());
-            call.enqueue(new Callback<List<AbsenceResponse>>() {
-                @Override
-                public void onResponse(@NonNull Call<List<AbsenceResponse>> call, @NonNull Response<List<AbsenceResponse>> response) {
-                    if (response.isSuccessful()) {
-                        absenceResponseList = response.body();
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<List<AbsenceResponse>> call, @NonNull Throwable t) {
-                    // Handle the failure
-                }
-            });
-        }
-        return absenceResponseList;
-    }
-
-
-    //TODO: error handling
-    public Map<String, String> getProfileInfo() {
-        Call<ChildResponse> call = client.getApiService().getChild(getBearer());
-        call.enqueue(new Callback<ChildResponse>() {
+        Call<List<AbsenceResponse>> call = client.getApiService().getAbsences(getBearer());
+        call.enqueue(new Callback<List<AbsenceResponse>>() {
             @Override
-            public void onResponse(@NonNull Call<ChildResponse> call, @NonNull Response<ChildResponse> response) {
+            public void onResponse(@NonNull Call<List<AbsenceResponse>> call, @NonNull Response<List<AbsenceResponse>> response) {
                 if (response.isSuccessful()) {
-
-                    childMap.put("name", ChildResponse.getName());
-                    childMap.put("age", ChildResponse.getAge());
-                    childMap.put("gender", ChildResponse.getGender());
-                    childMap.put("schoolyear", ChildResponse.getSchool_year());
-                    childMap.put("id", ChildResponse.getId());
-                    childMap.put("type", ChildResponse.getType());
-                    childMap.put("plus_enabled", ChildResponse.getPlus_enabled());
-                    childMap.put("date", ChildResponse.getDate());
+                    absenceResponseList = response.body();
+                    callback.onFetchSuccess(absenceResponseList);
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<ChildResponse> call, @NonNull Throwable throwable) {
-
+            public void onFailure(@NonNull Call<List<AbsenceResponse>> call, @NonNull Throwable t) {
+                callback.onFetchError(t);
             }
         });
-        return childMap;
+//        }
+        return absenceResponseList;
     }
 
 }

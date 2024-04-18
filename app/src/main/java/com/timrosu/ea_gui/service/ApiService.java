@@ -33,6 +33,7 @@ public interface ApiService {
 
     @Headers({ // potrebni okvirji za komunikacijo z eA strežnikom
             "origin: https://www.easistent.com",
+            "referer: https://www.easistent.com",
             "x-child-id: 370747",
             "x-client-platform: web",
             "x-client-version: 13",
@@ -40,7 +41,7 @@ public interface ApiService {
             "cookie: easistent_cookie=zapri"
     })
     @GET("/webapp")
-    Call<String> getBearer(@Header("Cookie") String cookie);
+    Call<String> getBearer(@Header("cookie") String cookie);
 
 
     @Headers({ // potrebni okvirji za komunikacijo z eA strežnikom
