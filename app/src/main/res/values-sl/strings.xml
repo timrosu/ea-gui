@@ -12,4 +12,15 @@
     <string name="login_successful_toast">Prijava uspešna</string>
     <string name="no_credentials_warning">Vnesi uporabniško ime in geslo</string>
     <string name="login_failed">Prijava neuspešna</string>
+    <string name="welcome_male_label">Pozdravljen</string>
+    <string name="welcome_female_label">Pozdravljena</string>
+    <string name="loginActivity_title">Prijava v eA</string>
+    <string name="welcome_text">Pozdravljeni v ea-gui!</string>
+    <string name="user_login">Prijava</string>
+    <string name="logout_button">odjava</string>
+    <string name="profile_info_greeter">Nekaj informacij o eA profilu</string>
+    <string name="age_label">Starost</string>
+    <string name="gender_label">Spol</string>
+    <string name="grade_label">Razred</string>
+    <string name="user_type_label">Vrsta uporabnika</string>
 </resources>

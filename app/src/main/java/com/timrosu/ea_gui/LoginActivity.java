@@ -1,7 +1,8 @@
 package com.timrosu.ea_gui;
 
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -13,10 +14,16 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.timrosu.ea_gui.api.Api;
-import com.timrosu.ea_gui.api.callback.LoginCallback;
+import com.timrosu.ea_gui.api.model.request.LoginRequest;
+import com.timrosu.ea_gui.api.tasks.LoginTask;
+import com.timrosu.ea_gui.cache.AuthData;
 
+/**
+ * @noinspection deprecation
+ */
 public class LoginActivity extends AppCompatActivity {
     Api api;
+    TextView errorTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,42 +39,49 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void getInputs(View v) {
-//        LoginResponse loginResponse = new LoginResponse();
-
         TextView etUsername = findViewById(R.id.etUsername);
-        String username = etUsername.getText().toString();
         TextView etPassword = findViewById(R.id.etPassword);
+        String username = etUsername.getText().toString();
         String password = etPassword.getText().toString();
 
-        TextView errorTV = findViewById(R.id.errorTV);
+        errorTV = findViewById(R.id.errorTV);
 
-        if (username.isEmpty() && password.isEmpty()) {
+        if (username.isEmpty() || password.isEmpty()) {
             errorTV.setText(getString(R.string.no_credentials_warning));
         } else {
+            LoginRequest.setUporabnik(username);
+            LoginRequest.setGeslo(password);
 
-            api.setLogin(username, password, new LoginCallback() {
-                @Override
-                public void onLoginSuccess(int code) {
-                    // Handle successful login
-                    Log.i("LoginSuccess", "Login successful with code: " + code);
-                    sendToast(getString(R.string.login_successful_toast));
-                    finish();
-                }
+           new LoginTask(this).execute();
 
-                @Override
-                public void onLoginFailure(Throwable throwable) {
-                    // Handle login failure
-                    Log.e("LoginError", "Login failed", throwable);
-                    errorTV.setText(R.string.login_failed);
-                }
-            });
-
-
+           waitForResponse();
         }
-
     }
 
     private void sendToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void waitForResponse() {
+        Handler hand = new Handler(Looper.getMainLooper());
+        hand.post(new Runnable() {
+            @Override
+            public void run() {
+                String status = AuthData.getStatus();
+                switch (status) {
+                    case "success":
+                        sendToast(getString(R.string.login_successful_toast));
+                        finish();
+                        break;
+                    case "fail":
+                        errorTV.setText(AuthData.getMessage());
+                        sendToast(getString(R.string.login_failed));
+                        break;
+                    default:
+                        hand.postDelayed((Runnable) this, 100);
+                        break;
+                }
+            }
+        });
     }
 }

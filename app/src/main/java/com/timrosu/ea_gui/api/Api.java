@@ -1,54 +1,61 @@
 package com.timrosu.ea_gui.api;
 
 import android.content.Context;
-import android.util.Log;
 
-import androidx.annotation.NonNull;
-
-import com.timrosu.ea_gui.api.cache.Credentials;
-import com.timrosu.ea_gui.api.callback.AbsenceCallback;
-import com.timrosu.ea_gui.api.callback.ChildCallback;
-import com.timrosu.ea_gui.api.callback.ExamCallback;
-import com.timrosu.ea_gui.api.callback.GradeCallback;
-import com.timrosu.ea_gui.api.callback.LoginCallback;
-import com.timrosu.ea_gui.client.ApiClient;
-import com.timrosu.ea_gui.keystore.CryptoManager;
-import com.timrosu.ea_gui.model.response.AbsenceResponse;
-import com.timrosu.ea_gui.model.response.ChildResponse;
-import com.timrosu.ea_gui.model.response.ExamResponse;
-import com.timrosu.ea_gui.model.response.GradeResponse;
-import com.timrosu.ea_gui.model.response.LoginResponse;
-import com.timrosu.ea_gui.service.ApiService;
+import com.timrosu.ea_gui.api.client.ApiClient;
+import com.timrosu.ea_gui.api.model.response.items.AbsenceItem;
+import com.timrosu.ea_gui.api.model.response.items.ExamItem;
+import com.timrosu.ea_gui.api.model.response.items.GradeItem;
+import com.timrosu.ea_gui.api.service.ApiService;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class Api {
-    private String cookie; //predpomnenje pistoktka
+    private List<ExamItem> examItemList;
+    private List<GradeItem> gradeItemList;
+    private List<AbsenceItem> absenceItemList;
     private final Map<String, String> childMap = new HashMap<>();
-    List<ExamResponse> examResponseList;
-    List<GradeResponse> gradeResponseList;
-    List<AbsenceResponse> absenceResponseList;
+
     private final Context context;
-    ApiClient client = new ApiClient();
     private final ApiService apiService;
 
     public Api(Context context) {
+        apiService = ApiClient.getRetrofit().create(ApiService.class);
         this.context = context;
-        apiService = client.getRetrofit().create(ApiService.class);
     }
-
+/*
     // sprejme uporabnisko ime in geslo in ga shrani
+    public boolean setLogin(String username, String password) {
+        try {
+            Call<LoginResponse> call = apiService.login(username, password);
+            Response<LoginResponse> response = call.execute();
+            LoginResponse loginResponse;
+
+            if(response.isSuccessful()){
+                loginResponse = response.body();
+                if (loginResponse != null && Objects.equals(loginResponse.getStatus(), "ok")) {
+                    if (!CryptoManager.checkCredentials(context)) {
+                        CryptoManager.saveCredentials(context, username, password);
+                    }
+                    AuthData.setCookie(Objects.requireNonNull(response.headers().get("set-cookie"))); //predpomnenje piskotka
+                    Log.i("status", loginResponse.getStatus());
+                    Log.i("Cookie", AuthData.getCookie());
+                    return true;
+                }
+            }
+
+        } catch (IOException e) {
+            Log.d(e.getLocalizedMessage(), Arrays.toString(e.getStackTrace()));
+        }
+        return false;
+    }*/
+
+
+/*
     public void setLogin(String username, String password, LoginCallback callback) {
-        Call<LoginResponse> call = client.getApiService().login(username, password);
+        Call<LoginResponse> call = apiService.login(username, password);
         call.enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
@@ -56,11 +63,12 @@ public class Api {
                     LoginResponse loginResponse = response.body();
                     int code = response.code();
                     if (Objects.requireNonNull(loginResponse).getStatus().equals("ok")) {
-                        CryptoManager.saveCredentials(context, username, password);
-                        cookie = response.headers().get("set-cookie"); //predpomnenje piskotka
-                        assert cookie != null;
-                        Log.i("Cookie", cookie);
+                        if(!CryptoManager.checkCredentials(context)){
+                            CryptoManager.saveCredentials(context, username, password);
+                        }
+                        AuthData.setCookie(Objects.requireNonNull(response.headers().get("set-cookie"))); //predpomnenje piskotka
                         Log.i("status", loginResponse.getStatus());
+                        Log.i("Cookie", AuthData.getCookie());
                         callback.onLoginSuccess(code);
                     }
                 }
@@ -72,17 +80,14 @@ public class Api {
             }
         });
     }
-
     public void logout() { //odjava
         CryptoManager.deleteCredentials(context);
     }
+*/
 
-    public boolean credentialCheck() { //povezava z razredom CryptoManager za preverjanje prisotnosti prijavnih podatkov
-        return CryptoManager.checkCredentials(context);
-    }
-
-    private String getCookie() { //metoda za pridobitev piskotka
-        if (cookie == null) {
+/*
+    private void setCookie() { //metoda za pridobitev piskotka
+        if (AuthData.getCookie() == null) {
             setLogin(CryptoManager.getUsername(context), CryptoManager.getPassword(context), new LoginCallback() {
                 @Override
                 public void onLoginSuccess(int code) {
@@ -97,40 +102,46 @@ public class Api {
                 }
             });
         }
-        return cookie;
     }
 
-    private String getBearer() {
-        class BearerCallback {
-            void onBearerReceived(String bearer) {
-                // Handle the received bearer token
-                Log.i("BearerToken", "Received bearer token: " + bearer);
-            }
+    private void setBearer() {
+        if (AuthData.getBearer() == null) {
+            setCookie();
+            String cookie = AuthData.getCookie();
+            class BearerCallback {
+                void onBearerReceived(String bearer) {
+                    // Handle the received bearer token
+                    Log.i("BearerToken", "Received bearer token: " + bearer);
+                }
 
-            void onBearerError(Throwable throwable) {
-                // Handle the error
-                Log.e("BearerError", "Error getting bearer token", throwable);
+                void onBearerError(Throwable throwable) {
+                    // Handle the error
+                    Log.e("BearerError", "Error getting bearer token", throwable);
+                }
             }
-        }
-        // Instantiate the callback
-        BearerCallback callback = new BearerCallback();
-        if (Credentials.getBearer() == null) {
-            Call<String> call = client.getApiService().getBearer(getCookie());
-            call.enqueue(new Callback<String>() {
+            // Instantiate the callback
+            BearerCallback callback = new BearerCallback();
+            Call<ResponseBody> call = apiService.getBearer(cookie);
+            call.enqueue(new Callback<ResponseBody>() {
                 @Override
-                public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
+                public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                     if (response.isSuccessful()) {
-                        String html = response.body();
-                        assert html != null;
-                        Log.i("BearerTokenBody", html);
+                        ResponseBody responseBody = response.body();
+                        String html = null;
+                        try {
+                            assert responseBody != null;
+                            html = responseBody.string();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
 
                         String regex = "<meta name=\"access-token\" content=\"(.*?)\">"; //regex to extract from html document
                         Pattern pattern = Pattern.compile(regex);
                         Matcher matcher = pattern.matcher(html);
 
                         if (matcher.find()) {
-                            Credentials.setBearer(matcher.group(1));
-                            callback.onBearerReceived(Credentials.getBearer());
+                            AuthData.setBearer(matcher.group(1));
+                            callback.onBearerReceived(AuthData.getBearer());
                         } else {
                             callback.onBearerError(new Exception("Access token not found in HTML"));
                         }
@@ -141,22 +152,22 @@ public class Api {
 
 
                 @Override
-                public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
+                public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                     Log.e("BearerError", "Error getting bearer token", t);
                     callback.onBearerError(new Exception("Error getting bearer token", t));
                 }
 
             });
-        } else {
-            callback.onBearerReceived(Credentials.getBearer());
         }
-        return Credentials.getBearer();
     }
+*/
 
-    public Map<String, String> getChild(ChildCallback callback) {
+  /*  public Map<String, String> getChild(ChildCallback callback) {
         if (childMap.isEmpty()) {
+//            setBearer();
+            String bearer = AuthData.getBearer();
 
-            Call<ChildResponse> call = client.getApiService().getChild(getBearer());
+            Call<ChildResponse> call = apiService.getChild(bearer);
             call.enqueue(new Callback<ChildResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<ChildResponse> call, @NonNull Response<ChildResponse> response) {
@@ -184,76 +195,119 @@ public class Api {
         }
 
         return childMap;
+    }*/
+
+    /*
+    //TODO: error handling
+    public List<ExamItem> getExams(ExamCallback callback) {
+        if (examItemList == null || examItemList.isEmpty()) {
+            setBearer();
+            String bearer = AuthData.getBearer();
+
+            Call<List<ExamResponse>> call = apiService.getExams(bearer);
+            call.enqueue(new Callback<List<ExamResponse>>() {
+                @Override
+                public void onResponse(@NonNull Call<List<ExamResponse>> call, @NonNull Response<List<ExamResponse>> response) {
+                    if (response.isSuccessful()) {
+                        examItemList = response.body();
+                        callback.onFetchSuccess(examItemList);
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<List<ExamResponse>> call, @NonNull Throwable throwable) {
+                    callback.onFetchError(throwable);
+                }
+            });
+        }
+        return examItemList;
     }
+    
 
     //TODO: error handling
-    public List<ExamResponse> getExams(ExamCallback callback) {
-//        if (examResponseList.isEmpty()) {
+    public List<GradeItem> getGrades(GradeCallback callback) {
+        if (gradeItemList == null || gradeItemList.isEmpty()) {
+//            setBearer();
+            String bearer = AuthData.getBearer();
 
-        Call<List<ExamResponse>> call = client.getApiService().getExams(getBearer());
-        call.enqueue(new Callback<List<ExamResponse>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<ExamResponse>> call, @NonNull Response<List<ExamResponse>> response) {
-                if (response.isSuccessful()) {
-                    examResponseList = response.body();
-                    callback.onFetchSuccess(examResponseList);
+            Call<GradeResponse> call = apiService.getGrades(bearer);
+            call.enqueue(new Callback<GradeResponse>() {
+                @Override
+                public void onResponse(@NonNull Call<GradeResponse> call, @NonNull Response<GradeResponse> response) {
+                    if (response.isSuccessful()) {
+                        GradeResponse gradeResponse = response.body();
+                        assert gradeResponse != null;
+                        gradeItemList = gradeResponse.getItems();
+                        callback.onFetchSuccess(gradeItemList);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(@NonNull Call<List<ExamResponse>> call, @NonNull Throwable throwable) {
-                callback.onFetchError(throwable);
-            }
-        });
-//        }
-        return examResponseList;
+                @Override
+                public void onFailure(@NonNull Call<GradeResponse> call, @NonNull Throwable t) {
+                    Log.d("GradeError", Objects.requireNonNull(t.getLocalizedMessage()));
+                    callback.onFetchError(t);
+                }
+            });
+        }
+        return gradeItemList;
     }
 
+
+
+/*
+    public List<GradeItem> getGrades(GradeCallback callback) {
+        if (gradeItemList == null || gradeItemList.isEmpty()) {
+            setBearer();
+            String bearer = AuthData.getBearer();
+
+            Call<GradeResponse> call = apiService.getGrades(bearer);
+            call.enqueue(new Callback<GradeResponse>() {
+                @Override
+                public void onResponse(@NonNull Call<GradeResponse> call, @NonNull Response<GradeResponse> response) {
+                    if (response.isSuccessful()) {
+                        GradeResponse gradeResponse = response.body();
+                        assert gradeResponse != null;
+                        gradeItemList = gradeResponse.getItems();
+                        callback.onFetchSuccess(gradeItemList);
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<GradeResponse> call, @NonNull Throwable t) {
+                    Log.d("GradeError", Objects.requireNonNull(t.getLocalizedMessage()));
+                    callback.onFetchError(t);
+                }
+            });
+        }
+        return gradeItemList;
+    }
+*/
+
+    /*
     //TODO: error handling
-    public List<GradeResponse> getGrades(GradeCallback callback) {
-//        if (gradeResponseList.isEmpty()) {
+    public List<AbsenceItem> getAbsences(AbsenceCallback callback) {
+        if (absenceItemList == null || absenceItemList.isEmpty()) {
+            setBearer();
+            String bearer = AuthData.getBearer();
 
-        Call<List<GradeResponse>> call = client.getApiService().getGrades(getBearer());
-        call.enqueue(new Callback<List<GradeResponse>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<GradeResponse>> call, @NonNull Response<List<GradeResponse>> response) {
-                if (response.isSuccessful()) {
-                    gradeResponseList = response.body();
-                    callback.onFetchSuccess(gradeResponseList);
+            Call<List<AbsenceResponse>> call = apiService.getAbsences(bearer);
+            call.enqueue(new Callback<List<AbsenceResponse>>() {
+                @Override
+                public void onResponse(@NonNull Call<List<AbsenceResponse>> call, @NonNull Response<List<AbsenceResponse>> response) {
+                    if (response.isSuccessful()) {
+                        absenceItemList = response.body();
+                        callback.onFetchSuccess(absenceItemList);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(@NonNull Call<List<GradeResponse>> call, @NonNull Throwable t) {
-                Log.d("GradeError", Objects.requireNonNull(t.getLocalizedMessage()));
-                callback.onFetchError(t);
-            }
-        });
-//        }
-        return gradeResponseList;
+                @Override
+                public void onFailure(@NonNull Call<List<AbsenceResponse>> call, @NonNull Throwable t) {
+                    callback.onFetchError(t);
+                }
+            });
+        }
+        return absenceItemList;
     }
 
-    //TODO: error handling
-    public List<AbsenceResponse> getAbsences(AbsenceCallback callback) {
-//        if (absenceResponseList.isEmpty()) {
-
-        Call<List<AbsenceResponse>> call = client.getApiService().getAbsences(getBearer());
-        call.enqueue(new Callback<List<AbsenceResponse>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<AbsenceResponse>> call, @NonNull Response<List<AbsenceResponse>> response) {
-                if (response.isSuccessful()) {
-                    absenceResponseList = response.body();
-                    callback.onFetchSuccess(absenceResponseList);
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<AbsenceResponse>> call, @NonNull Throwable t) {
-                callback.onFetchError(t);
-            }
-        });
-//        }
-        return absenceResponseList;
-    }
-
+     */
 }

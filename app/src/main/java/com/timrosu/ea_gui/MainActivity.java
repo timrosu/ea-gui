@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     ProfileFragment profileFragment = new ProfileFragment();
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,16 +37,21 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             return insets;
         });
 
-
-        if(!CryptoManager.checkCredentials(this)){
-            Log.i("credentials","missing");
-             startActivity(new Intent(this,LoginActivity.class));
-        } else {
-            Log.i("credentials","available");
-        }
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        bottomNavigationView.setSelectedItemId(R.id.grades);
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(CryptoManager.checkCredentials(this)){
+            Log.i("credentials","available");
+            bottomNavigationView.setSelectedItemId(R.id.grades);
+        } else {
+            Log.i("credentials","missing");
+            startActivity(new Intent(this,LoginActivity.class));
+        }
     }
 
     // glede na izbran gumb da pravi fragment v ospredje

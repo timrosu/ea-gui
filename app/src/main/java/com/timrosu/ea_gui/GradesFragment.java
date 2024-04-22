@@ -1,7 +1,8 @@
 package com.timrosu.ea_gui;
 
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,16 +13,16 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.timrosu.ea_gui.api.Api;
-import com.timrosu.ea_gui.api.callback.GradeCallback;
-import com.timrosu.ea_gui.model.response.GradeResponse;
+import com.timrosu.ea_gui.api.auth.Auth;
+import com.timrosu.ea_gui.api.tasks.GradeTask;
+import com.timrosu.ea_gui.cache.Data;
 import com.timrosu.ea_gui.ui.GradeAdapter;
 
-import java.util.List;
+//import com.timrosu.ea_gui.ui.GradeAdapter;
 
 public class GradesFragment extends Fragment {
-    private RecyclerView gradeRecyclerView;
-    private GradeAdapter gradeAdapter;
+    private RecyclerView recyclerView;
+    private GradeAdapter adapter;
 
     public GradesFragment() {
     }
@@ -32,31 +33,45 @@ public class GradesFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Api api = new Api(getContext()); // Initialize Api here
-        api.getGrades(new GradeCallback(){
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-            @Override
-            public void onFetchSuccess(List<GradeResponse> gradeResponseList) {
-                gradeAdapter = new GradeAdapter(gradeResponseList, getContext());
-                gradeRecyclerView.setAdapter(gradeAdapter);
-            }
+        if (Data.getGradeItems() != null && !Data.getGradeItems().isEmpty()) {
+            loadDataList(view);
+        } else {
+            new Auth(view.getContext()); //pridobi avtentikacijsko kodo, ce se ni nastavljena
+            new GradeTask().execute(); //pridobi podatke za prikaz
+            waitForResponse(view);
+        }
 
+//        gradeRecyclerView = view.findViewById(R.id.gradeRecycler);
+//        gradeRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+//
+    }
+
+    private void loadDataList(View view) { //nalozi podatke v fragment
+        //povezi se na RecyclerView
+        recyclerView = view.findViewById(R.id.gradeRecycler);
+        adapter = new GradeAdapter();
+
+        RecyclerView.LayoutManager gradeViewManager = new LinearLayoutManager(view.getContext());
+        recyclerView.setLayoutManager(gradeViewManager);
+
+        recyclerView.setAdapter(adapter);
+    }
+
+    private void waitForResponse(View view) { //caka na odziv in nato zacne z nalaganjem podatkov
+        Handler hand = new Handler(Looper.getMainLooper());
+        hand.post(new Runnable() {
             @Override
-            public void onFetchError(Throwable throwable) {
-                Log.d("GradesFragment", "Error fetching grades", throwable);
+            public void run() {
+                if (Data.getGradeItems() != null && !Data.getGradeItems().isEmpty()) {
+                    loadDataList(view);
+                } else {
+                    hand.postDelayed((Runnable) this, 100);
+                }
             }
         });
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        
-
-        gradeRecyclerView = view.findViewById(R.id.gradeRecycler);
-        gradeRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-    }
 }

@@ -1,17 +1,10 @@
-package com.timrosu.ea_gui.model.response;
+package com.timrosu.ea_gui.api.model.response.items;
 
-import com.google.gson.annotations.SerializedName;
-
-public class GradeResponse {
-    @SerializedName("course")
+public class GradeItem {
     private String course;
-    @SerializedName("type_name")
     private String type_name;
-    @SerializedName("date")
     private String date;
-    @SerializedName("grade")
     private String grade;
-    @SerializedName("subject")
     private String subject;
 
     public String getCourse() {

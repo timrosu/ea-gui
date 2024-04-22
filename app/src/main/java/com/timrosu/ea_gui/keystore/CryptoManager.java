@@ -27,6 +27,10 @@ public class CryptoManager {
         return "";
     }
 
+    private static void logger(Context context, String action) {
+        Log.i("CredentialAction", action);
+    }
+
     //sprejme uporabnisko ime in geslo in jih kriptirane shrani v datoteko v mapi programa na /data/data/com.timrosu.ea_gui/...credentials.xml
     public static void saveCredentials(Context context, String username, String password) {
         try {
@@ -46,7 +50,7 @@ public class CryptoManager {
             prefEditor.putString(KEY_USERNAME, username);
             prefEditor.putString(KEY_PASSWORD, password);
             prefEditor.apply();
-            Log.i("CredentialsSaved", "true");
+            logger(context,"save");
 
         } catch (Exception e) {
             Log.i("CredentialsSaved", "false");
@@ -64,9 +68,9 @@ public class CryptoManager {
                     EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                     EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             );
-            Log.i("CredentialsDeleted", "true");
+            logger(context,"delete");
         } catch (GeneralSecurityException | IOException e) {
-            Log.i("CredentialsDeleted", "false");
+            logger(context,"delete - failed");
             throw new RuntimeException(e);
         }
         sharedPreferences.edit().clear().apply();
@@ -83,6 +87,7 @@ public class CryptoManager {
                     EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                     EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             );
+            logger(context,"getUsername");
         } catch (GeneralSecurityException | IOException e) {
             throw new RuntimeException(e);
         }
@@ -100,6 +105,7 @@ public class CryptoManager {
                     EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                     EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             );
+            logger(context,"getPassword");
         } catch (GeneralSecurityException | IOException e) {
             throw new RuntimeException(e);
         }
@@ -116,6 +122,7 @@ public class CryptoManager {
                     EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                     EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             );
+            logger(context,"check");
         } catch (GeneralSecurityException | IOException e) {
             throw new RuntimeException(e);
         }

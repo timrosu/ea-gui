@@ -5,12 +5,10 @@
     <string name="exams_title">Exams</string>
     <string name="profile_title">Profile</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
-    <string name="loginActivity_title" translatable="false">ea-gui</string>
+    <string name="loginActivity_title">Login to eA</string>
     <string name="login_button_label">log In</string>
     <string name="username_hint">e-mail</string>
     <string name="password_hint">password</string>
@@ -20,5 +18,13 @@
     <string name="no_credentials_warning">Enter username and password!</string>
     <string name="logout_button">logout</string>
     <string name="login_failed">Login failed</string>
+    <string name="profile_info_greeter">Some info in eA profile:</string>
+    <string name="welcome_male_label">Welcome</string>
+    <string name="welcome_female_label">Welcome</string>
+    <string name="age_label">Age</string>
+    <string name="gender_label">Gender</string>
+    <string name="grade_label">Grade</string>
+    <string name="id_label" translatable="false">ID</string>
+    <string name="user_type_label">User type</string>
 </resources>
 

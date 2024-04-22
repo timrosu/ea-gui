@@ -1,13 +1,12 @@
-package com.timrosu.ea_gui.service;
+package com.timrosu.ea_gui.api.service;
 
-import com.timrosu.ea_gui.model.response.AbsenceResponse;
-import com.timrosu.ea_gui.model.response.ChildResponse;
-import com.timrosu.ea_gui.model.response.ExamResponse;
-import com.timrosu.ea_gui.model.response.GradeResponse;
-import com.timrosu.ea_gui.model.response.LoginResponse;
+import com.timrosu.ea_gui.api.model.response.AbsenceResponse;
+import com.timrosu.ea_gui.api.model.response.ChildResponse;
+import com.timrosu.ea_gui.api.model.response.ExamResponse;
+import com.timrosu.ea_gui.api.model.response.GradeResponse;
+import com.timrosu.ea_gui.api.model.response.LoginResponse;
 
-import java.util.List;
-
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -33,7 +32,6 @@ public interface ApiService {
 
     @Headers({ // potrebni okvirji za komunikacijo z eA strežnikom
             "origin: https://www.easistent.com",
-            "referer: https://www.easistent.com",
             "x-child-id: 370747",
             "x-client-platform: web",
             "x-client-version: 13",
@@ -41,7 +39,7 @@ public interface ApiService {
             "cookie: easistent_cookie=zapri"
     })
     @GET("/webapp")
-    Call<String> getBearer(@Header("cookie") String cookie);
+    Call<ResponseBody> getBearer(@Header("cookie") String cookie);
 
 
     @Headers({ // potrebni okvirji za komunikacijo z eA strežnikom
@@ -53,7 +51,7 @@ public interface ApiService {
             "cookie: easistent_cookie=zapri"
     })
     @GET("/m/evaluations?filter=past")
-    Call<List<GradeResponse>> getGrades(@Header("Authorization") String bearer);
+    Call<GradeResponse> getGrades(@Header("Authorization") String bearer);
 
 
     @Headers({ // potrebni okvirji za komunikacijo z eA strežnikom
@@ -65,7 +63,7 @@ public interface ApiService {
             "cookie: easistent_cookie=zapri"
     })
     @GET("/m/evaluations?filter=future")
-    Call<List<ExamResponse>> getExams(@Header("Authorization") String bearer);
+    Call<ExamResponse> getExams(@Header("Authorization") String bearer);
 
 
     @Headers({ // potrebni okvirji za komunikacijo z eA strežnikom
@@ -77,7 +75,7 @@ public interface ApiService {
             "cookie: easistent_cookie=zapri"
     })
     @GET("/m/absences")
-    Call<List<AbsenceResponse>> getAbsences(@Header("Authorization") String bearer);
+    Call<AbsenceResponse> getAbsences(@Header("Authorization") String bearer);
 
 
     @Headers({ // potrebni okvirji za komunikacijo z eA strežnikom
