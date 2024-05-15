@@ -20,10 +20,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     BottomNavigationView bottomNavigationView; //navigacijska vrstica
 
     // fragmenti, med katerimi navigira
-    GradesFragment gradesFragment = new GradesFragment();
-    ExamsFragment examsFragment = new ExamsFragment();
-    AbsencesFragment absencesFragment = new AbsencesFragment();
-    ProfileFragment profileFragment = new ProfileFragment();
+    private final GradesFragment gradesFragment = new GradesFragment();
+    private final ExamsFragment examsFragment = new ExamsFragment();
+    private final AbsencesFragment absencesFragment = new AbsencesFragment();
+    private final ProfileFragment profileFragment = new ProfileFragment();
 
 
     @Override
