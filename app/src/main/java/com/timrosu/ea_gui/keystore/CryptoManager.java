@@ -78,7 +78,7 @@ public class CryptoManager {
     }
     //vrne vrednost "nastavitve", ki vsebuje uporabnisko ime
     public static String getUsername(Context context) {
-        EncryptedSharedPreferences sharedPreferences = null;
+        EncryptedSharedPreferences sharedPreferences;
         try {
             sharedPreferences = (EncryptedSharedPreferences) EncryptedSharedPreferences.create(
                     CRED_FILE,
@@ -96,7 +96,7 @@ public class CryptoManager {
 
     //vrne vrednost "nastavitve", ki vsebuje geslo
     public static String getPassword(Context context) {
-        EncryptedSharedPreferences sharedPreferences = null;
+        EncryptedSharedPreferences sharedPreferences;
         try {
             sharedPreferences = (EncryptedSharedPreferences) EncryptedSharedPreferences.create(
                     CRED_FILE,
