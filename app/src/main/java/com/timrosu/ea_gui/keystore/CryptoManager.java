@@ -27,7 +27,7 @@ public class CryptoManager {
         return "";
     }
 
-    private static void logger(Context context, String action) {
+    private static void logger(String action) {
         Log.i("CredentialAction", action);
     }
 
@@ -50,7 +50,7 @@ public class CryptoManager {
             prefEditor.putString(KEY_USERNAME, username);
             prefEditor.putString(KEY_PASSWORD, password);
             prefEditor.apply();
-            logger(context,"save");
+            logger("save");
 
         } catch (Exception e) {
             Log.i("CredentialsSaved", "false");
@@ -68,9 +68,9 @@ public class CryptoManager {
                     EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                     EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             );
-            logger(context,"delete");
+            logger("delete");
         } catch (GeneralSecurityException | IOException e) {
-            logger(context,"delete - failed");
+            logger("delete - failed");
             throw new RuntimeException(e);
         }
         sharedPreferences.edit().clear().apply();
@@ -87,7 +87,7 @@ public class CryptoManager {
                     EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                     EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             );
-            logger(context,"getUsername");
+            logger("getUsername");
         } catch (GeneralSecurityException | IOException e) {
             throw new RuntimeException(e);
         }
@@ -105,7 +105,7 @@ public class CryptoManager {
                     EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                     EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             );
-            logger(context,"getPassword");
+            logger("getPassword");
         } catch (GeneralSecurityException | IOException e) {
             throw new RuntimeException(e);
         }
@@ -122,7 +122,7 @@ public class CryptoManager {
                     EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                     EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             );
-            logger(context,"check");
+            logger("check");
         } catch (GeneralSecurityException | IOException e) {
             throw new RuntimeException(e);
         }
