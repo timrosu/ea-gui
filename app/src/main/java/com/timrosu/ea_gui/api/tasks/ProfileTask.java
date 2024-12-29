@@ -38,9 +38,8 @@ public class ProfileTask extends AsyncTask<Void, Void, ChildResponse> {
                 Data.childMap.put("plus", childResponse.getPlus_enabled());
 
                 return childResponse;
-            } else {
-                Log.d("ChildTaskError", "Request failed.");
             }
+            Log.d("ChildTaskError", "Request failed.");
         } catch (IOException e) {
             Log.d(e.getLocalizedMessage(), Arrays.toString(e.getStackTrace()));
         }

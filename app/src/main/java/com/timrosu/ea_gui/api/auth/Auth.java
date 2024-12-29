@@ -44,7 +44,7 @@ public class Auth {
                         Log.d("setCookieError", AuthData.getMessage());
                         break;
                     default:
-                        hand.postDelayed((Runnable) this, 100);
+                        hand.postDelayed(this, 100);
                         break;
                 }
             }
@@ -62,7 +62,7 @@ public class Auth {
             @Override
             public void run() {
                 if (AuthData.getBearer()==null) {
-                    hand.postDelayed((Runnable) this, 100);
+                    hand.postDelayed(this, 100);
                 }
             }
         });

@@ -35,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        api = new Api(this);
+        api = new Api();
     }
 
     public void getInputs(View v) {
@@ -78,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
                         sendToast(getString(R.string.login_failed));
                         break;
                     default:
-                        hand.postDelayed((Runnable) this, 100);
+                        hand.postDelayed(this, 100);
                         break;
                 }
             }

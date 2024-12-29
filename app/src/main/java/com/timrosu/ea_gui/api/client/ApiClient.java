@@ -16,7 +16,7 @@ public class ApiClient {
             logger.setLevel(HttpLoggingInterceptor.Level.BODY);
 
             OkHttpClient client = new OkHttpClient.Builder()
-                    .addInterceptor(logger)
+                    .addInterceptor(logger) //TODO: remove for stable build
                     .build();
 
             retrofit = new Retrofit.Builder()

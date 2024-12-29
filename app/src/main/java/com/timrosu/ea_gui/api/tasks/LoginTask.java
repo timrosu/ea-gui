@@ -5,12 +5,12 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.timrosu.ea_gui.cache.AuthData;
 import com.timrosu.ea_gui.api.client.ApiClient;
-import com.timrosu.ea_gui.keystore.CryptoManager;
 import com.timrosu.ea_gui.api.model.request.LoginRequest;
 import com.timrosu.ea_gui.api.model.response.LoginResponse;
 import com.timrosu.ea_gui.api.service.ApiService;
+import com.timrosu.ea_gui.cache.AuthData;
+import com.timrosu.ea_gui.keystore.CryptoManager;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -19,6 +19,9 @@ import java.util.Objects;
 import retrofit2.Call;
 import retrofit2.Response;
 
+/**
+ * @noinspection deprecation
+ */
 public class LoginTask extends AsyncTask<Void, Void, LoginResponse> {
     @SuppressLint("StaticFieldLeak")
     private final Context context;
