@@ -60,7 +60,7 @@ public class ExamsFragment extends Fragment {
                 if (Data.getExamItems() != null && !Data.getExamItems().isEmpty()) {
                     loadDataList(view);
                 } else {
-                    hand.postDelayed((Runnable) this, 100);
+                    hand.postDelayed(this, 100);
                 }
             }
         });

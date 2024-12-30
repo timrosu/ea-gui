@@ -82,7 +82,7 @@ public class ExamAdapter extends RecyclerView.Adapter<ExamAdapter.CustomViewHold
             @Override
             public void run() {
                 if (Data.getExamItems() == null || Data.getExamItems().isEmpty()) {
-                    hand.postDelayed((Runnable) this, 10);
+                    hand.postDelayed(this, 10);
                 }
             }
         });

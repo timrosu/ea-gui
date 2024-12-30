@@ -84,7 +84,7 @@ public class GradeAdapter extends RecyclerView.Adapter<GradeAdapter.CustomViewHo
             @Override
             public void run() {
                 if (Data.getGradeItems() == null || Data.getGradeItems().isEmpty()) {
-                    hand.postDelayed((Runnable) this, 10);
+                    hand.postDelayed(this, 10);
                 }
             }
         });

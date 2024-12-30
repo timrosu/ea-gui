@@ -36,22 +36,14 @@ public class Data { // "predpomnilnik" za vsebino izpisa
         Data.absenceItems = absenceItems;
     }
 
-    private static List<ExamItem> examList;
-    public static List<ExamItem> getExamList() {
-        return examList;
-    }
-
-    public static void setExamList(List<ExamItem> examList) {
-        Data.examList = examList;
-    }
-
     public static Map<String,String> childMap = new HashMap<>();
 
     public static void deleteAll() {
         Data.setAbsenceItems(null);
         Data.setExamItems(null);
-        Data.setExamList(null);
+        Data.setExamItems(null);
         Data.setGradeItems(null);
+        Data.childMap.clear();
     }
 }
 

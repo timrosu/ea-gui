@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.timrosu.ea_gui.keystore.CryptoManager;
 
 import java.util.Objects;
 
+/** @noinspection deprecation*/
 public class ProfileFragment extends Fragment {
     public ProfileFragment() {
     }
@@ -39,7 +41,7 @@ public class ProfileFragment extends Fragment {
 
         Button logoutButton = view.findViewById(R.id.logout_button);
         logoutButton.setOnClickListener(v -> {
-            logout(v.getContext());
+            logout(v.getContext(), view);
             Toast.makeText(v.getContext(), "logged out", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(v.getContext(), LoginActivity.class));
         });
@@ -61,7 +63,7 @@ public class ProfileFragment extends Fragment {
                 if (Data.childMap != null && !Data.childMap.isEmpty()) {
                     printProfileInfo(view);
                 } else {
-                    hand.postDelayed((Runnable) this, 100);
+                    hand.postDelayed(this, 100);
                 }
             }
         });
@@ -80,8 +82,18 @@ public class ProfileFragment extends Fragment {
         ((TextView) view.findViewById(R.id.tvType)).setText(String.format("%s: %s", getString(R.string.user_type_label), Data.childMap.get("type")));
     }
 
-    public void logout(Context context) {
+    private void clearProfileInfo(View view) {
+        ((TextView) view.findViewById(R.id.tvAge)).setText("");
+        ((TextView) view.findViewById(R.id.tvGender)).setText("");
+        ((TextView) view.findViewById(R.id.tvGrade)).setText("");
+        ((TextView) view.findViewById(R.id.tvId)).setText("");
+        ((TextView) view.findViewById(R.id.tvType)).setText("");
+    }
+
+    public void logout(Context context, View view) {
         CryptoManager.deleteCredentials(context);
         Data.deleteAll();
+        clearProfileInfo(view);
+        Log.d("logout", "done");
     }
 }

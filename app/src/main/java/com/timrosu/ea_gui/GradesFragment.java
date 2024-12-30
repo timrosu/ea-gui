@@ -68,7 +68,7 @@ public class GradesFragment extends Fragment {
                 if (Data.getGradeItems() != null && !Data.getGradeItems().isEmpty()) {
                     loadDataList(view);
                 } else {
-                    hand.postDelayed((Runnable) this, 100);
+                    hand.postDelayed(this, 100);
                 }
             }
         });

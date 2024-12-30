@@ -60,7 +60,7 @@ public class AbsencesFragment extends Fragment {
                 if (Data.getAbsenceItems() != null && !Data.getAbsenceItems().isEmpty()) {
                     loadDataList(view);
                 } else {
-                    hand.postDelayed((Runnable) this, 100);
+                    hand.postDelayed(this, 100);
                 }
             }
         });

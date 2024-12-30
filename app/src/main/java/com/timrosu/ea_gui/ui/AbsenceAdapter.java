@@ -77,7 +77,7 @@ public class AbsenceAdapter extends RecyclerView.Adapter<AbsenceAdapter.CustomVi
             @Override
             public void run() {
                 if (Data.getAbsenceItems() == null || Data.getAbsenceItems().isEmpty()) {
-                    hand.postDelayed((Runnable) this, 10);
+                    hand.postDelayed(this, 10);
                 }
             }
         });
