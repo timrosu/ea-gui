@@ -7,6 +7,8 @@ import android.util.Log;
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKeys;
 
+import com.timrosu.ea_gui.cache.AuthData;
+
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
@@ -68,12 +70,13 @@ public class CryptoManager {
                     EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                     EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             );
+            sharedPreferences.edit().clear().apply();
+            AuthData.deleteAll();
             logger("delete");
         } catch (GeneralSecurityException | IOException e) {
             logger("delete - failed");
             throw new RuntimeException(e);
         }
-        sharedPreferences.edit().clear().apply();
 
     }
     //vrne vrednost "nastavitve", ki vsebuje uporabnisko ime

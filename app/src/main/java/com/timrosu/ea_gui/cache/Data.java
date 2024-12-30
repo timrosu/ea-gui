@@ -46,5 +46,12 @@ public class Data { // "predpomnilnik" za vsebino izpisa
     }
 
     public static Map<String,String> childMap = new HashMap<>();
+
+    public static void deleteAll() {
+        Data.setAbsenceItems(null);
+        Data.setExamItems(null);
+        Data.setExamList(null);
+        Data.setGradeItems(null);
+    }
 }
 

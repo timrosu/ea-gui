@@ -35,5 +35,11 @@ public class AuthData { // "predpomnilnik" za avtentikacijsko kodo
         AuthData.bearer = bearer;
     }
 
+    public static void deleteAll() {
+        AuthData.setMessage(null);
+        AuthData.setStatus(null);
+        AuthData.setCookie("");
+        AuthData.setBearer(null);
+    }
 }
 

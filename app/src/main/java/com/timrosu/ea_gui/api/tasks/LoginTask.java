@@ -58,7 +58,7 @@ public class LoginTask extends AsyncTask<Void, Void, LoginResponse> {
             } else {
                 AuthData.setStatus("fail");
             }
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             Log.d(e.getLocalizedMessage(), Arrays.toString(e.getStackTrace()));
         }
         return null;

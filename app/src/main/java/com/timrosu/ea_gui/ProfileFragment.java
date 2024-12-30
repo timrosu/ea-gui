@@ -82,5 +82,6 @@ public class ProfileFragment extends Fragment {
 
     public void logout(Context context) {
         CryptoManager.deleteCredentials(context);
+        Data.deleteAll();
     }
 }
